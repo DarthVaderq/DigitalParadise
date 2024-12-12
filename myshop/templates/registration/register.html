@@ -1,0 +1,17 @@
+{% extends "shop/base.html" %}
+ {% if category %}{{ category.name }}{% else %}Регистрация{% endif %}
+{% block content %}
+
+<div class='center'> 
+ <form method="post" action="{% url "register" %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Зарегистрироваться</button>
+    <a href="{% url 'login' %}">Вход</a>
+  </form>  
+
+
+</div>
+
+
+{% endblock %}

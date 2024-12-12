@@ -1,0 +1,80 @@
+{% extends "shop/base.html" %}
+{% load static %}
+
+{% block title %}
+ {{ product.name }}
+{% endblock %}
+
+{% block content %}
+
+ <div class="product-detail">
+    <!-- Проверка и вывод изображения -->
+    <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static "img/no_image.png" %}{% endif %}" alt="{{ product.name }}">
+
+    <h3>{{ product.name }}</h3>
+
+    <h2>
+        Категория:
+        <a href="{{ product.category.get_absolute_url }}">
+            {{ product.category }}
+        </a>
+    </h2>  
+
+    <p class="price">{{ product.price }} сом</p>
+
+    {% comment %} Кнопка добавить в корзину {% endcomment %}
+    {% if user.is_authenticated %}
+    <!-- Для авторизованного пользователя можно добавлять товар в корзину -->
+    <form action="{% url "cart:cart_add" product.id %}" method="post">
+        {{ cart_product_form }}
+        {% csrf_token %}
+        <input class='add-btn' type="submit" value="Добавить в корзину">
+    </form>
+    {% else %}
+    <!-- Для неавторизованного пользователя нельзя добавлять товар в корзину, и переходит на сайт регистраций -->
+    <form action="{% url "login" %}" method="post">
+        {{ cart_product_form }}
+        {% csrf_token %}
+        <input class='add-btn' type="submit" value="Добавить в корзину">
+    </form>
+    {% endif %}
+
+    <br><br>
+
+    {% comment %} Описание продукта {% endcomment %}
+    <div class="description">
+        <h3>Описание:</h3>
+        {{ product.description|linebreaks }}
+    </div>
+
+    <hr>
+
+    {% comment %} Блок комментариев {% endcomment %}
+
+    <h3>Добавить комментарий</h3>
+
+    {% if user.is_authenticated %}
+      <form method="post">
+          {% csrf_token %}
+          {{ form.as_p }}
+          <button type="submit" class="btn btn-primary">Отправить</button>
+      </form>
+    {% else %}
+      <p><a href="{% url 'login' %}">Войдите</a>, чтобы оставить комментарий.</p>
+    {% endif %}
+    <hr>
+    <h2>Комментарии</h2>
+
+    {% for comment in comments %}
+        <div>
+            <p><strong>{{ comment.user }}</strong> ({{ comment.created_at|date:"d M Y H:i" }}):</p>
+            <p>{{ comment.text }}</p>
+        </div>
+    {% empty %}
+        <p>Комментариев пока нет.</p>
+    {% endfor %}
+
+    <hr>
+ </div>
+
+{% endblock %}

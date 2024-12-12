@@ -1,0 +1,27 @@
+{% extends "shop/base.html" %}
+{% load static %}
+{% block title %}
+ {% if category %}{{ category.name }}{% else %}Логин{% endif %}
+{% endblock %}
+{% block content %}
+{% if messages %}
+    <div class="message-container">
+        {% for message in messages %}
+            <div class="message {{ message.tags }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+<div class='center'> 
+ <form method="post" action="{% url "login" %}">
+    {% csrf_token %}
+    {{form.as_p}}
+    <button type='submit'>Войти</button> 
+    <a   href="{% url 'register' %}">Регистрация</a>
+  </form>  
+  
+</div>
+
+{% endblock %}

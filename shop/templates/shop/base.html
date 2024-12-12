@@ -1,0 +1,48 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+ <head>
+ <meta charset="utf-8" />
+ <title>{% block title %}My shop{% endblock %}</title>
+ <link href="{% static "css/base.css" %}" rel="stylesheet">
+ </head>
+ <body>
+
+
+ <div id="header">
+<a href="{% url 'shop:product_list' %}"> 
+</a>
+<img  src="{% static "images/logo.png" %}" alt="Catalog Icon" width="112" height="110">
+<div class='header-url'>
+ <a href="{% url 'shop:product_list' %}" class='url-btn'>Главная</a>
+ <a href="/" class='url-btn'>О нас</a>
+ <a href="{% url 'cart:cart_detail' %}" class='url-btn'>Корзина</a>
+
+    {% if user.is_authenticated %}
+      <!-- Для авторизованного пользователя показываем ссылку на профиль и кнопку выхода -->
+      <a href="/" class="url-btn">Профиль</a> 
+      <form action="{% url 'logout' %}" method="post">
+        {% csrf_token %}
+        <button type="submit" class="url-btn">Выйти</button>
+      </form>
+    {% else %}
+      <!-- Для неавторизованного пользователя показываем ссылку на вход -->
+      <a href="{% url 'login' %}" class="url-btn">Войти</a>
+    {% endif %}
+
+<form method="GET" role="search" action="{% url 'shop:product_list' %}" class="search-form">
+    <input type="search" name="search" placeholder="Поиск товаров..." class="search-input">
+    <button type="submit" class="search-button">Искать</button>
+</form>
+
+</div>
+ </div>
+ <div id="content">
+
+
+ {% block content %} 
+ <script src="{% static 'js/filters.js' %}"></script>
+ {% endblock %}
+ </div>
+ </body>
+</html>
